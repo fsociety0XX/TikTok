@@ -1,30 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
+import axios from "./Axios";
 import Video from "./Video";
 
 function App() {
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    async function getPosts() {
+      const response = await axios.get("/v2/posts");
+      setVideos(response.data);
+      return response;
+    }
+    getPosts();
+  }, []);
+
+  console.log(videos, "videos");
   return (
     //BEM naming convention
     <div className="app">
       <div className="app__videos">
-        <Video
-          likes={114}
-          share={17}
-          message={249}
-          channel="kusshhh_____"
-          description="This is a very cute cat."
-          song="Photograph by Ed Sheeran"
-          url="https://player.vimeo.com/external/289189952.sd.mp4?s=756cbea276c653d18bc7141d8458693936225dd9&profile_id=165&oauth2_token_id=57447761"
-        />
-        <Video
-          likes={104}
-          share={127}
-          message={49}
-          channel="dog__lover"
-          description="This is a very cute dog."
-          song="Perfect by Ed Sheeran"
-          url="https://player.vimeo.com/external/403278689.sd.mp4?s=17fce3ede934495febaff28db865f47a3c9480ab&profile_id=165&oauth2_token_id=57447761"
-        />
+        {videos.map((video) => (
+          <Video
+            likes={video.likes}
+            share={video.share}
+            message={video.message}
+            channel={video.channel}
+            description={video.description}
+            song={video.song}
+            url={video.url}
+          />
+        ))}
       </div>
     </div>
   );
